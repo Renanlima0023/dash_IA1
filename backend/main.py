@@ -1,9 +1,9 @@
-from app.services.groqService import generateDashboardSuggestions
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import os
-from app.services.dataProfiler import dataProfile
+from app.services.dataProfiler import createDataProfile
+from app.services.groqService import generateDashboardSuggestions
 
 app = FastAPI(title="Dashboard AI API", version="1.0.0")
 
@@ -34,7 +34,7 @@ async def uploadFile(file: UploadFile = File(...)):
         else:
             df = pd.read_excel(file.file)
         
-        profile = dataProfile(df, file.filename)
+        profile = createDataProfile(df, file.filename)
         
         return {
             "success": True,
@@ -49,3 +49,17 @@ async def uploadFile(file: UploadFile = File(...)):
 @app.get("/api/test")
 def testApi():
     return {"status": "ok", "message": "Backend conectado e funcionando"}
+
+@app.post("/api/ai-analyze")
+async def aiAnalyze(profile: dict):
+    """
+    Recebe o DataProfile e gera sugestões de KPIs e gráficos usando a IA do Groq
+    """
+    try:
+        suggestions = generateDashboardSuggestions(profile)
+        return {
+            "success": True,
+            "suggestions": suggestions
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
