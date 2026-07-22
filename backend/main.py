@@ -1,3 +1,4 @@
+from app.services.groqService import generateDashboardSuggestions
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
