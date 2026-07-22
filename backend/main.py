@@ -2,7 +2,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import os
-from app.services.dataProfiler import createDataProfile
+from app.services.dataProfiler import dataProfile
 
 app = FastAPI(title="Dashboard AI API", version="1.0.0")
 
@@ -33,7 +33,7 @@ async def uploadFile(file: UploadFile = File(...)):
         else:
             df = pd.read_excel(file.file)
         
-        profile = createDataProfile(df, file.filename)
+        profile = dataProfile(df, file.filename)
         
         return {
             "success": True,
