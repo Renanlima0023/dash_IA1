@@ -36,3 +36,22 @@ def createDataProfile(df: pd.DataFrame, filename: str) -> Dict[str, Any]:
         profile["columns"].append(colInfo)
     
     return profile
+
+def get_sample_data(df: pd.DataFrame, limit: int = 100) -> list:
+    """
+    Retorna uma amostra dos dados para usar nos gráficos
+    """
+    # Pega as primeiras 'limit' linhas e converte para lista de dicionários
+    sample = df.head(limit).to_dict(orient='records')
+    
+    # Converte valores não-serializáveis (como datetime, numpy types)
+    for row in sample:
+        for key, value in row.items():
+            if pd.isna(value):
+                row[key] = None
+            elif hasattr(value, 'item'):  # numpy types
+                row[key] = value.item() if hasattr(value, 'item') else str(value)
+            elif isinstance(value, (pd.Timestamp, pd.DatetimeTZDtype)):
+                row[key] = str(value)
+    
+    return sample
