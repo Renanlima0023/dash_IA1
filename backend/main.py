@@ -36,13 +36,16 @@ async def uploadFile(file: UploadFile = File(...)):
             df = pd.read_excel(file.file)
         
         profile = createDataProfile(df, file.filename)
+        sampleData = get_sample_data(df, limit=100)
         
         return {
             "success": True,
             "message": "Arquivo processado com sucesso",
             "fileName": file.filename,
             "rowCount": profile["rowCount"],
-            "profile": profile
+            "profile": profile,
+            "sampleData": sampleData,  # NOVO: dados reais para os gráficos
+            "columns": list(df.columns)  # NOVO: lista de todas as colunas
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao processar arquivo: {str(e)}")
