@@ -37,14 +37,27 @@ async def uploadFile(file: UploadFile = File(...)):
         else:
             df = pd.read_excel(file.file)
         
+        print(f"\n{'='*60}")
+        print(f"📁 ARQUIVO RECEBIDO: {file.filename}")
+        print(f"📊 Shape do DataFrame: {df.shape}")
+        print(f"📋 Colunas: {list(df.columns)}")
+        print(f"{'='*60}\n")
+        
         # Criar o DataProfile COMPLETO
         profile = createDataProfile(df, file.filename)
         sampleData = getSampleData(df, limit=100)
+        columnsList = list(df.columns)
         
-        # Debug no console do Render
-        print(f"✅ Arquivo processado: {file.filename}")
-        print(f" Colunas numéricas: {profile['numericColumns']}")
-        print(f"📋 Colunas categóricas: {profile['categoricalColumns']}")
+        print(f"\n🔍 DEBUG - Profile gerado:")
+        print(f"   - fileName: {profile.get('fileName')}")
+        print(f"   - rowCount: {profile.get('rowCount')}")
+        print(f"   - columnCount: {profile.get('columnCount')}")
+        print(f"   - numericColumns: {profile.get('numericColumns')}")
+        print(f"   - categoricalColumns: {profile.get('categoricalColumns')}")
+        print(f"   - dateColumns: {profile.get('dateColumns')}")
+        print(f"   - columns (total): {len(profile.get('columns', []))}")
+        print(f"   - sampleData (total): {len(sampleData)}")
+        print(f"{'='*60}\n")
         
         return {
             "success": True,
@@ -54,7 +67,7 @@ async def uploadFile(file: UploadFile = File(...)):
             "columnCount": profile["columnCount"],
             "profile": profile,
             "sampleData": sampleData,
-            "columns": list(df.columns)
+            "columns": columnsList
         }
         
     except Exception as e:
@@ -71,13 +84,24 @@ async def aiAnalyze(profile: dict):
     Recebe o DataProfile e gera sugestões de KPIs e gráficos usando a IA do Groq
     """
     try:
-        # Debug: mostrar o profile recebido
-        print(f"🤖 Profile recebido para análise:")
-        print(f"   - numericColumns: {profile.get('numericColumns', [])}")
-        print(f"   - categoricalColumns: {profile.get('categoricalColumns', [])}")
-        print(f"   - dateColumns: {profile.get('dateColumns', [])}")
+        print(f"\n{'='*60}")
+        print(f"🤖 PROFILE RECEBIDO PARA ANÁLISE:")
+        print(f"   - fileName: {profile.get('fileName')}")
+        print(f"   - rowCount: {profile.get('rowCount')}")
+        print(f"   - columnCount: {profile.get('columnCount')}")
+        print(f"   - numericColumns: {profile.get('numericColumns')}")
+        print(f"   - categoricalColumns: {profile.get('categoricalColumns')}")
+        print(f"   - dateColumns: {profile.get('dateColumns')}")
+        print(f"   - columns (total): {len(profile.get('columns', []))}")
+        print(f"{'='*60}\n")
         
         suggestions = generateDashboardSuggestions(profile)
+        
+        print(f"✅ SUGESTÕES GERADAS:")
+        print(f"   - KPIs: {len(suggestions.get('kpis', []))}")
+        print(f"   - Charts: {len(suggestions.get('charts', []))}")
+        print(f"   - Observations: {bool(suggestions.get('observations'))}")
+        print(f"{'='*60}\n")
         
         return {
             "success": True,
