@@ -4,7 +4,7 @@ from typing import Dict, List, Any
 def createDataProfile(df: pd.DataFrame, filename: str) -> Dict[str, Any]:
     print(f"\n{'='*60}")
     print(f"🔍 GERANDO PROFILE PARA: {filename}")
-    print(f" Total de colunas no DataFrame: {len(df.columns)}")
+    print(f"📊 Total de colunas no DataFrame: {len(df.columns)}")
     print(f"📋 Nomes das colunas: {list(df.columns)}")
     
     profile = {
@@ -42,7 +42,7 @@ def createDataProfile(df: pd.DataFrame, filename: str) -> Dict[str, Any]:
         else:
             colInfo["type"] = "categorical"
             profile["categoricalColumns"].append(str(col))
-            print(f"    {col} é CATEGÓRICO")
+            print(f"   📝 {col} é CATEGÓRICO")
             
         profile["columns"].append(colInfo)
     
