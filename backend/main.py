@@ -48,7 +48,7 @@ async def uploadFile(file: UploadFile = File(...)):
         sampleData = getSampleData(df, limit=100)
         columnsList = list(df.columns)
         
-        print(f"\n🔍 DEBUG - Profile gerado:")
+        print(f"\n DEBUG - Profile gerado:")
         print(f"   - fileName: {profile.get('fileName')}")
         print(f"   - rowCount: {profile.get('rowCount')}")
         print(f"   - columnCount: {profile.get('columnCount')}")
