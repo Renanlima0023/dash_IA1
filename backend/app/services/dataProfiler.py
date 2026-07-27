@@ -2,11 +2,10 @@ import pandas as pd
 from typing import Dict, List, Any
 
 def createDataProfile(df: pd.DataFrame, filename: str) -> Dict[str, Any]:
-    """Cria um DataProfile completo dos dados"""
-    
-    print(f"\n🔍 DEBUG - Processando arquivo: {filename}")
-    print(f" Total de colunas: {len(df.columns)}")
-    print(f" Colunas encontradas: {list(df.columns)}")
+    print(f"\n{'='*60}")
+    print(f"🔍 GERANDO PROFILE PARA: {filename}")
+    print(f"📊 Total de colunas no DataFrame: {len(df.columns)}")
+    print(f"📋 Nomes das colunas: {list(df.columns)}")
     
     profile = {
         "fileName": filename,
@@ -29,37 +28,34 @@ def createDataProfile(df: pd.DataFrame, filename: str) -> Dict[str, Any]:
             "sampleValues": [str(v) for v in df[col].dropna().head(5).tolist()]
         }
         
-        # Detecção de tipos
         is_numeric = pd.api.types.is_numeric_dtype(df[col])
         is_datetime = pd.api.types.is_datetime64_any_dtype(df[col])
         
         if is_numeric:
             colInfo["type"] = "numeric"
             profile["numericColumns"].append(str(col))
-            print(f"   🔢 {col} é NUMÉRICO ({col_dtype})")
+            print(f"   🔢 {col} é NUMÉRICO")
         elif is_datetime:
             colInfo["type"] = "date"
             profile["dateColumns"].append(str(col))
-            print(f"   📅 {col} é DATA ({col_dtype})")
+            print(f"   📅 {col} é DATA")
         else:
             colInfo["type"] = "categorical"
             profile["categoricalColumns"].append(str(col))
-            print(f"   📝 {col} é CATEGÓRICO ({col_dtype})")
+            print(f"   📝 {col} é CATEGÓRICO")
             
         profile["columns"].append(colInfo)
     
     print(f"\n✅ RESUMO DO PROFILE:")
-    print(f"   Numéricas: {profile['numericColumns']}")
-    print(f"   Categóricas: {profile['categoricalColumns']}")
-    print(f"   Datas: {profile['dateColumns']}")
-    print(f"   Total de colunas no profile.columns: {len(profile['columns'])}\n")
+    print(f"   - Total em profile.columns: {len(profile['columns'])}")
+    print(f"   - numericColumns: {profile['numericColumns']}")
+    print(f"   - categoricalColumns: {profile['categoricalColumns']}")
+    print(f"{'='*60}\n")
     
     return profile
 
 def getSampleData(df: pd.DataFrame, limit: int = 100) -> list:
-    """Retorna uma amostra dos dados"""
     sample = df.head(limit).to_dict(orient='records')
-    
     for row in sample:
         for key, value in row.items():
             if pd.isna(value):
@@ -68,5 +64,4 @@ def getSampleData(df: pd.DataFrame, limit: int = 100) -> list:
                 row[key] = value.item()
             elif isinstance(value, (pd.Timestamp, pd.DatetimeTZDtype)):
                 row[key] = str(value)
-    
     return sample
